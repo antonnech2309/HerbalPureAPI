@@ -17,3 +17,12 @@ class OrderStatus(models.Model):
 
     def __str__(self):
         return self.status
+
+
+class Order(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE, related_name="orders")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.status}"
