@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from order.models import Order
 
@@ -40,8 +41,18 @@ class Product(models.Model):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="products"
+        related_name="products",
+        blank=True,
+        null=True
     )
+    slug = models.SlugField(unique=True, max_length=255, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(
+                f"{self.name} {self.company} {self.category.name}"
+            )
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} {self.company} {self.category.name}"
