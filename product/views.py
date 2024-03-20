@@ -1,7 +1,8 @@
 from rest_framework import viewsets
 
-from product.models import Category
-from product.serializers import CategorySerializer, ParentCategorySerializer
+from product.models import Category, Product
+from product.serializers import CategorySerializer, ParentCategorySerializer, ProductSerializer, ProductListSerializer, \
+    ProductDetailSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -17,3 +18,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return ParentCategorySerializer
         return CategorySerializer
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ProductListSerializer
+
+        if self.action == "retrieve":
+            return ProductDetailSerializer
+
+        return ProductSerializer
