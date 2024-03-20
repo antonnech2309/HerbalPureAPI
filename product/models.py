@@ -28,7 +28,7 @@ class Product(models.Model):
     sale_quantity = models.IntegerField(blank=True, null=True)
     total_amount = models.IntegerField()
     discount = models.IntegerField()
-    features = models.TextField()
+    features = models.JSONField(default=list)
     instruction = models.TextField()
     promoted = models.BooleanField()
     category = models.ForeignKey(
