@@ -9,7 +9,8 @@ class Category(models.Model):
         "self",
         on_delete=models.CASCADE,
         blank=True,
-        null=True
+        null=True,
+        related_name="subcategories"
     )
 
     def __str__(self):

@@ -9,11 +9,15 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ("id", "name", "parent_category")
 
 
-class NestedCategoryListSerializer(serializers.ModelSerializer):
+class ChildCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ("id", "name")
 
 
-class CategoryListSerializer(CategorySerializer):
-    parent_category = NestedCategoryListSerializer()
+class ParentCategorySerializer(serializers.ModelSerializer):
+    subcategories = ChildCategorySerializer(many=True)
+
+    class Meta:
+        model = Category
+        fields = ("id", "name", "subcategories")
