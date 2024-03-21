@@ -20,6 +20,9 @@ class Category(models.Model):
 
         return self.name
 
+    class Meta:
+        ordering = ["name"]
+
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -38,13 +41,6 @@ class Product(models.Model):
         related_name="products"
     )
     company = models.CharField(max_length=100)
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-        related_name="products",
-        blank=True,
-        null=True
-    )
     slug = models.SlugField(unique=True, max_length=255, blank=True)
 
     def save(self, *args, **kwargs):
@@ -56,3 +52,6 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.company} {self.category.name}"
+
+    class Meta:
+        ordering = ["promoted", "name"]
