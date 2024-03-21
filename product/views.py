@@ -25,6 +25,20 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     lookup_field = "slug"
 
+    def get_queryset(self):
+        category = self.request.query_params.get("category")
+        promoted = self.request.query_params.get("promoted")
+
+        queryset = self.queryset
+
+        if category:
+            queryset = queryset.filter(category_id=category)
+
+        if promoted is not None:
+            queryset = queryset.filter(promoted=promoted)
+
+        return queryset
+
     def get_serializer_class(self):
         if self.action == "list":
             return ProductListSerializer
