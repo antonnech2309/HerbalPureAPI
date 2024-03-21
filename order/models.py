@@ -1,8 +1,9 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 
+from HerbalPureAPI import settings
 
-class OrderStatus(models.Model):
+
+class Order(models.Model):
     CHOICES = [
         ("PENDING", "Pending"),
         ("CONFIRMED", "Confirmed"),
@@ -10,19 +11,17 @@ class OrderStatus(models.Model):
         ("DELIVERED", "Delivered")
     ]
 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(
         max_length=50,
-        choices=CHOICES,
+        choices=CHOICES
     )
-
-    def __str__(self):
-        return self.status
-
-
-class Order(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE, related_name="orders")
     created_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey("product.Product", on_delete=models.CASCADE, related_name="orders")
+    quantity = models.PositiveIntegerField()
 
     def __str__(self):
         return f"{self.user} - {self.status}"
+
+    class Meta:
+        ordering = ["-created_at"]
