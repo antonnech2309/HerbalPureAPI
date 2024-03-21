@@ -40,7 +40,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "promoted",
             "category",
             "company",
-            "order",
         )
 
 
@@ -65,7 +64,6 @@ class ProductDetailSerializer(ProductSerializer):
             "promoted",
             "category",
             "company",
-            "order",
             "slug",
         )
 
@@ -81,21 +79,3 @@ class ProductListSerializer(serializers.ModelSerializer):
             "discount",
             "promoted"
         )
-
-# Post request for creating Prodyct
-# {
-#     "name": "string",
-#     "description": "string",
-#     "price": 0,
-#     "serving_size": "string",
-#     "sale_quantity": 0,
-#     "total_amount": 0,
-#     "discount": 0,
-#     "features": [
-#         "string"
-#     ],
-#     "instruction": "string",
-#     "promoted": true,
-#     "category": 2,
-#     "company": "string",
-#    }
