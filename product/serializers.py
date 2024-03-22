@@ -23,7 +23,14 @@ class ParentCategorySerializer(serializers.ModelSerializer):
         fields = ("id", "name", "subcategories")
 
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ("id", "image")
+
+
 class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Product
         fields = (
@@ -65,6 +72,7 @@ class ProductDetailSerializer(ProductSerializer):
             "category",
             "company",
             "slug",
+            "image"
         )
 
 
@@ -77,5 +85,13 @@ class ProductListSerializer(serializers.ModelSerializer):
             "price",
             "company",
             "discount",
-            "promoted"
+            "promoted",
+            "total_amount",
+            "image",
         )
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ("id", "image")

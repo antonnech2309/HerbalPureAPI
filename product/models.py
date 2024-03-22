@@ -1,3 +1,6 @@
+import os
+import uuid
+
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -24,8 +27,16 @@ class Category(models.Model):
         ordering = ["name"]
 
 
+def product_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.name)}-{uuid.uuid4()}{extension}"
+
+    return os.path.join("uploads/movies/", filename)
+
+
 class Product(models.Model):
     name = models.CharField(max_length=200)
+    image = models.ImageField(null=True, upload_to=product_image_file_path)
     description = models.TextField()
     price = models.FloatField()
     serving_size = models.CharField(max_length=100)
