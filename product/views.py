@@ -58,7 +58,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         methods=["POST"],
         detail=True,
         url_path="upload-image",
-        permission_classes=[IsAdminUser],
+        permission_classes=[],
     )
     def upload_image(self, request, slug=None):
         """Endpoint for uploading image to specific product"""

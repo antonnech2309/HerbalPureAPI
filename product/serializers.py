@@ -88,10 +88,5 @@ class ProductListSerializer(serializers.ModelSerializer):
             "promoted",
             "total_amount",
             "image",
+            "slug",
         )
-
-
-class ProductImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ("id", "image")
