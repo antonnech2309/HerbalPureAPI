@@ -19,7 +19,7 @@ class Category(models.Model):
 
     def __str__(self):
         if self.parent_category:
-            return self.parent_category.name
+            return f"{self.parent_category.name}/{self.name}"
 
         return self.name
 
@@ -40,7 +40,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.FloatField()
     serving_size = models.CharField(max_length=100)
-    sale_quantity = models.IntegerField(blank=True, null=True)
+    capsules_amount = models.IntegerField(blank=True, null=True)
     total_amount = models.IntegerField()
     discount = models.IntegerField()
     features = models.JSONField(default=list)
