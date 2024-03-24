@@ -9,14 +9,8 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ("id", "name", "parent_category")
 
 
-class ChildCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ("id", "name")
-
-
 class ParentCategorySerializer(serializers.ModelSerializer):
-    subcategories = ChildCategorySerializer(many=True)
+    subcategories = CategorySerializer(many=True)
 
     class Meta:
         model = Category
@@ -39,7 +33,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "description",
             "price",
             "serving_size",
-            "sale_quantity",
+            "capsules_amount",
             "total_amount",
             "discount",
             "features",
@@ -63,7 +57,6 @@ class ProductDetailSerializer(ProductSerializer):
             "description",
             "price",
             "serving_size",
-            "sale_quantity",
             "total_amount",
             "discount",
             "features",

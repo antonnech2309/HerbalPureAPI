@@ -14,6 +14,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -90,14 +91,16 @@ WSGI_APPLICATION = "HerbalPureAPI.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.environ["POSTGRES_HOST"],
-        "NAME": os.environ["POSTGRES_DB"],
-        "USER": os.environ["POSTGRES_USER"],
-        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        # "ENGINE": "django.db.backends.postgresql",
+        # "HOST": os.environ["POSTGRES_HOST"],
+        # "NAME": os.environ["POSTGRES_DB"],
+        # "USER": os.environ["POSTGRES_USER"],
+        # "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+
     }
 }
-
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES["default"].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
