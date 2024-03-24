@@ -4,6 +4,6 @@ README.md
 vol
 .python-version
 .venv
+.gitignore
+node_modules
 .idea
-__pycache__
-db.sqlite3
