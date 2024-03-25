@@ -84,6 +84,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             "name",
             "price",
             "capsules_amount",
+            "serving_size",
             "company",
             "discount",
             "promoted",
