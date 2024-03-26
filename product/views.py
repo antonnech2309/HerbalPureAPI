@@ -10,13 +10,16 @@ from product.serializers import CategorySerializer, ParentCategorySerializer, Pr
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.prefetch_related("subcategories").select_related("parent_category")
     serializer_class = CategorySerializer
 
     def get_queryset(self):
+        queryset = self.queryset
+
         if self.action == "list":
-            return Category.objects.filter(parent_category=None)
-        return Category.objects.all()
+            return queryset.filter(parent_category=None)
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
