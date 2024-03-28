@@ -3,6 +3,19 @@ from django.db import models
 from HerbalPureAPI import settings
 
 
+class OrderProduct(models.Model):
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    product = models.ForeignKey("product.Product", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    @property
+    def total(self) -> float:
+        return self.quantity * self.product.price
+
+    def __str__(self):
+        return f"{self.order} - {self.product} ({self.quantity})"
+
+
 class Order(models.Model):
     CHOICES = [
         ("PENDING", "Pending"),
@@ -17,8 +30,7 @@ class Order(models.Model):
         choices=CHOICES
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    product = models.ForeignKey("product.Product", on_delete=models.CASCADE, related_name="orders")
-    quantity = models.PositiveIntegerField()
+    products = models.ManyToManyField("product.Product", through=OrderProduct)
 
     def __str__(self):
         return f"{self.user} - {self.status}"

@@ -1,22 +1,68 @@
 from rest_framework import serializers
 
-from order.models import Order
+from order.models import Order, OrderProduct
 from product.serializers import ProductListSerializer
 
 
+class OrderProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OrderProduct
+        fields = (
+            "id",
+            "product",
+            "quantity",
+        )
+
+
 class OrderSerializer(serializers.ModelSerializer):
+    products = OrderProductSerializer(many=True)
 
     class Meta:
         model = Order
         fields = (
             "id",
+            "products",
             "status",
-            "product",
-            "created_at",
-            "quantity",
         )
-        read_only_fields = ("id", "created_at")
+
+    def create(self, validated_data):
+        products_data = validated_data.pop("products")
+        order = Order.objects.create(**validated_data)
+
+        for product_data in products_data:
+            product = product_data.get('product')
+            quantity = product_data.get('quantity')
+            if product and quantity:
+                OrderProduct.objects.create(order=order, product=product, quantity=quantity)
+
+        return order
 
 
-class OrderListSerializer(OrderSerializer):
-    product = ProductListSerializer(read_only=True)
+class OrderProductListSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer(many=False)
+
+    class Meta:
+        model = OrderProduct
+        fields = (
+            "id",
+            "product",
+            "quantity",
+            "total"
+        )
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = (
+            "id",
+            "products",
+            "status",
+        )
+
+    def get_products(self, obj):
+        products = OrderProduct.objects.filter(order=obj)
+        return [OrderProductListSerializer(product).data for product in products]
