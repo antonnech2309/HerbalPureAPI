@@ -1,12 +1,15 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics
+from jwt import InvalidTokenError
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from rest_framework.response import Response
 
-from user.serializers import UserSerializer
+from user.serializers import UserSerializer, CustomTokenObtainPairSerializer, CustomTokenRefreshSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -20,13 +23,6 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
-
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        return token
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -44,3 +40,22 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             "user": user_info_data
         }
         return Response(data)
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        try:
+            user = JWTAuthentication().get_user(AccessToken(response.data["access"]))
+            user_info_serializer = UserSerializer(user)
+            user_info_data = user_info_serializer.data
+            data = {
+                "access": response.data["access"],
+                "refresh": response.data["refresh"],
+                "user": user_info_data
+            }
+            return Response(data)
+        except (InvalidTokenError, TokenError):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
