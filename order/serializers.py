@@ -31,8 +31,8 @@ class OrderSerializer(serializers.ModelSerializer):
         order = Order.objects.create(**validated_data)
 
         for product_data in products_data:
-            product = product_data.get('product')
-            quantity = product_data.get('quantity')
+            product = product_data.get("product")
+            quantity = product_data.get("quantity")
             if product and quantity:
                 OrderProduct.objects.create(order=order, product=product, quantity=quantity)
 
@@ -60,10 +60,10 @@ class OrderListSerializer(serializers.ModelSerializer):
             "id",
             "products",
             "status",
+            "created_at",
+            "order_price"
         )
 
     def get_products(self, obj):
         products = OrderProduct.objects.filter(order=obj)
         return [OrderProductListSerializer(product).data for product in products]
-
-

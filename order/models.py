@@ -10,7 +10,13 @@ class OrderProduct(models.Model):
 
     @property
     def total(self) -> float:
-        return self.quantity * self.product.price
+        if self.product.discount:
+            return round(self.quantity * (
+                    self.product.price -
+                    (self.product.price * self.product.discount / 100)
+            ), 2)
+
+        return round(self.quantity * self.product.price, 2)
 
     def __str__(self):
         return f"{self.order} - {self.product} ({self.quantity})"
@@ -31,6 +37,13 @@ class Order(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     products = models.ManyToManyField("product.Product", through=OrderProduct)
+
+    @property
+    def order_price(self) -> float:
+        return round(
+            sum([product.total for product in self.orderproduct_set.all()]),
+            2
+        )
 
     def __str__(self):
         return f"{self.user} - {self.status}"
