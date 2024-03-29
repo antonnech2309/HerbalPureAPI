@@ -45,7 +45,6 @@ class OrderProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
         fields = (
-            "id",
             "product",
             "quantity",
             "total"
@@ -66,3 +65,5 @@ class OrderListSerializer(serializers.ModelSerializer):
     def get_products(self, obj):
         products = OrderProduct.objects.filter(order=obj)
         return [OrderProductListSerializer(product).data for product in products]
+
+
