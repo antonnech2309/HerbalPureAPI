@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from order.models import Order, OrderProduct
+from product.models import Product
 from product.serializers import ProductListSerializer
 
 
@@ -33,8 +34,19 @@ class OrderSerializer(serializers.ModelSerializer):
         for product_data in products_data:
             product = product_data.get("product")
             quantity = product_data.get("quantity")
-            if product and quantity:
-                OrderProduct.objects.create(order=order, product=product, quantity=quantity)
+            if product and quantity < product.total_amount:
+                product.total_amount -= quantity
+                Product.objects.filter(id=product.id).update(
+                    total_amount=product.total_amount
+                )
+                OrderProduct.objects.create(
+                    order=order, product=product, quantity=quantity
+                )
+            else:
+                order.delete()
+                raise serializers.ValidationError(
+                    "Not enough products in stock."
+                )
 
         return order
 
@@ -64,6 +76,17 @@ class OrderListSerializer(serializers.ModelSerializer):
             "order_price"
         )
 
-    def get_products(self, obj):
+    @staticmethod
+    def get_products(obj):
         products = OrderProduct.objects.filter(order=obj)
-        return [OrderProductListSerializer(product).data for product in products]
+        products_data = []
+
+        for product in products:
+            product_data = OrderProductListSerializer(product).data
+            product_data["product"]["image"] = (
+                    "http://localhost:8080" +
+                    product.product.image.url
+            )
+            products_data.append(product_data)
+
+        return products_data
