@@ -79,7 +79,14 @@ class OrderListSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_products(obj):
         products = OrderProduct.objects.filter(order=obj)
-        return [
-            OrderProductListSerializer(product).data
-            for product in products
-        ]
+        products_data = []
+
+        for product in products:
+            product_data = OrderProductListSerializer(product).data
+            product_data["product"]["image"] = (
+                    "http://localhost:8080" +
+                    product.product.image.url
+            )
+            products_data.append(product_data)
+
+        return products_data
