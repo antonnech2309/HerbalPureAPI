@@ -74,3 +74,9 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         token["email"] = user.email
 
         return token
+
+
+class ContactUsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    email = serializers.EmailField()
+    message = serializers.CharField()
