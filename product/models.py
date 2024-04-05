@@ -69,7 +69,13 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name} {self.company} {self.category.name}"
+        product_string = f"{self.name} {self.company} {self.category.name}"
+
+        if self.capsules_amount:
+            product_string += f" {self.capsules_amount} capsules"
+
+        return product_string
+
 
     class Meta:
         ordering = ["promoted", "name"]

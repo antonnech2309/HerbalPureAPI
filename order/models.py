@@ -19,7 +19,7 @@ class OrderProduct(models.Model):
         return round(self.quantity * self.product.price, 2)
 
     def __str__(self):
-        return f"{self.order} - {self.product} ({self.quantity})"
+        return f"{self.product.__str__()} - {self.quantity} units - {self.total}$"
 
 
 class Order(models.Model):
@@ -46,7 +46,10 @@ class Order(models.Model):
         )
 
     def __str__(self):
-        return f"{self.user} - {self.status}"
+        products = [product.__str__() for product in self.products.all()]
+
+        return (f"Order with products: {', '.join(products)} - "
+                f"total price is {self.order_price}$")
 
     class Meta:
         ordering = ["-created_at"]
