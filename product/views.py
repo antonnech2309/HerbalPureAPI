@@ -10,7 +10,9 @@ from product.serializers import CategorySerializer, ParentCategorySerializer, Pr
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.prefetch_related("subcategories").select_related("parent_category")
+    queryset = Category.objects.prefetch_related(
+        "subcategories"
+    ).select_related("parent_category")
     serializer_class = CategorySerializer
 
     def get_queryset(self):
