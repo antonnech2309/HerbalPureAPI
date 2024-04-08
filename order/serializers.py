@@ -84,9 +84,25 @@ class OrderListSerializer(serializers.ModelSerializer):
         for product in products:
             product_data = OrderProductListSerializer(product).data
             product_data["product"]["image"] = (
-                    "http://localhost:8080" +
+                    "https://herbalpureapi.onrender.com" +
                     product.product.image.url
             )
             products_data.append(product_data)
 
         return products_data
+
+
+# POST request
+# {
+#     "products": [
+#         {
+#             "product": 1,
+#             "quantity": 2
+#         },
+#         {
+#             "product": 2,
+#             "quantity": 1
+#         }
+#     ]
+# }
+
